@@ -248,17 +248,15 @@ A bateria pode levar vários minutos. A pasta de saída recebe dados brutos e ag
 4. **Quando a tabela hash pode compensar seu custo de preparação e manutenção?** Quando a economia nas consultas e atualizações cobre o custo de preparo, sob uma capacidade e uma dispersão compatíveis com a carga.
 5. **Por que os resultados experimentais não permitem afirmar que um algoritmo é sempre superior?** Tempo e memória variam com o volume, a distribuição dos UDIs, a frequência de atualizações e o ambiente de execução.
 
-## Roteiro de apresentação · 12 minutos
+## Tópicos para apresentação
 
-| Tempo | Conteúdo |
-|---|---|
-| 0–2 min | Problema, origem dos dados e pergunta central. |
-| 2–4 min | Arquitetura orientada a objetos e substituição de estratégias. |
-| 4–7 min | Ocorrência, consulta por UDI, ordenação e alteração de um registro. |
-| 7–11 min | Protocolo, gráficos, complexidade e compensação dos índices. |
-| 11–12 min | Recomendação técnica para a carga medida e limites da conclusão. |
+1. Contextualização do problema, origem dos dados e pergunta central.
+2. Arquitetura orientada a objetos e troca de estratégias algorítmicas.
+3. Demonstração da simulação, da investigação de ocorrências e do gerenciamento de registros.
+4. Metodologia, resultados experimentais e custos de preparação, consulta e manutenção.
+5. Recomendação técnica para a carga medida e limites da conclusão.
 
-[Roteiro detalhado de demonstração](docs/apresentacao.md)
+[Guia de apresentação](docs/apresentacao.md)
 
 ## Limitações e referências
 

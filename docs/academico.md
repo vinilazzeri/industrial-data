@@ -220,13 +220,15 @@ A recomendação técnica depende da carga. A busca sequencial evita preparaçã
 
 As diferenças numéricas variam com máquina, Python, ruído do sistema e delineamento. As chaves sintéticas e a função módulo fixam padrões de colisão específicos. O pico de `tracemalloc` cobre alocações Python rastreadas e a simulação descreve regras didáticas. A [interpretação da execução incluída](resultados/interpretacao.md) liga essas hipóteses às medições exportadas.
 
-## Material reaproveitado e contribuições
+## Material reaproveitado e ferramentas de apoio
 
 A fonte de dados é a AI4I, com atribuição e licença CC BY 4.0. Os arquivos Chart.js, Inter e IBM Plex Mono são distribuídos localmente com licenças em `static/vendor/`. A identidade visual segue as especificações fornecidas no enunciado. O conector apresentou links de origem do protótipo Figma Make, mas o ambiente não abriu os arquivos. As estratégias acadêmicas foram escritas para este projeto, com as implementações Markdown e Python inspecionáveis. Codex foi usado como ferramenta de apoio para implementação, testes, integração e redação. Pytest, Ruff e Playwright foram usados na validação local.
 
-| Integrante | Identificação | Contribuição individual |
+## Identificação dos integrantes e contribuições individuais
+
+| Integrante | Matrícula USP | Contribuição individual |
 | --- | --- | --- |
-| | | |
-| | | |
-| | | |
+| Vinicius Lazzeri | 15979921 | Concepção, desenvolvimento e integração da aplicação IndustrialData, abrangendo a arquitetura do sistema, a implementação das funcionalidades e a integração entre simulação, gerenciamento de registros e análise de algoritmos. |
+| Rafael Nascimento | 18616390 | Pesquisa técnica e apoio à fundamentação teórica do projeto, com foco nos algoritmos, nas estruturas de dados e nos conceitos utilizados na análise experimental. |
+| Wendel Avila | 18616319 | Suporte técnico-acadêmico à elaboração do projeto, incluindo pesquisa complementar e apoio à organização dos requisitos e à contextualização metodológica do trabalho. |
 
