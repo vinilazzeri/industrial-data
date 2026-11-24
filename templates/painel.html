@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% from '_operacao.html' import cartao, dialogos, opcoes_medicao %}
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='operacao.css') }}">
+<script defer src="{{ url_for('static', filename='controle-operacional.js') }}"></script>
+<script defer src="{{ url_for('static', filename='operacao.js') }}"></script>
+{% endblock %}
+{% block conteudo %}
+<section class="cabecalho-pagina cabecalho-operacao">
+  <div><h1>{{ titulo }}</h1>
+    <p>Controle a frota e acompanhe os sensores de cada máquina durante a execução.</p>
+  </div>
+  <div class="acoes">
+    <a class="botao" href="/api/maquinas/todas/csv">{{ icone('download', 17) }} Exportar CSV</a>
+    <button id="executar-todas" type="button" class="botao primario" disabled>{{ icone('play', 18) }} Iniciar todas</button>
+  </div>
+</section>
+<div class="grade-kpis operacao-kpis" aria-label="Indicadores da simulação">
+  {% for chave, nome, glifo, cor in (
+    ('operando','Em operação','cpu','teal'), ('gerados','Ciclos registrados','database','azul'),
+    ('alertas','Alertas registrados','alert','amarelo'), ('falhas','Falhas registradas','failure','vermelho')) %}
+  <article class="cartao kpi">
+    <div class="kpi-topo"><h2>{{ nome }}</h2><span class="glifo {{ cor }}">{{ icone(glifo, 17) }}</span></div>
+    <strong id="{{ chave }}" class="numero-kpi">—</strong>
+  </article>
+  {% endfor %}
+</div>
+<section class="bloco frota-operacional" aria-labelledby="titulo-frota">
+  <div class="titulo-bloco">
+    <div><h2 id="titulo-frota">Frota industrial</h2><p>Operação independente por equipamento.</p></div>
+    <details class="ajuda-operacional">
+      <summary>Como começar</summary>
+      <ol><li>Configure os parâmetros de uma máquina.</li><li>Inicie e acompanhe os sensores.</li>
+        <li>Pause, retome ou encerre quando precisar.</li><li>Abra Histórico ou Estatísticas para investigar os ciclos.</li></ol>
+    </details>
+  </div>
+  <p data-conexao-aviso class="aviso-conexao" role="status" hidden>Sem conexão com o simulador. Reconectando…</p>
+  <div id="maquinas-cartoes" class="grade-maquinas">
+    {% for codigo, nome in equipamentos_nome.items() %}{{ cartao(codigo, nome) }}{% endfor %}
+  </div>
+</section>
+<div class="grade-monitor operacao-monitor">
+  <section class="cartao painel-grafico">
+    <div class="titulo-bloco">
+      <div><h2>Tendência operacional</h2><p>Últimos 60 ciclos por equipamento.</p></div>
+      <label class="somente-leitor" for="tendencia-campo">Medição</label>
+      <select id="tendencia-campo">{{ opcoes_medicao() }}</select>
+    </div>
+    <div class="grafico"><canvas id="tendencia" aria-label="Tendência por máquina" role="img"></canvas>
+      <p id="tendencia-vazia" class="grafico-vazio">Inicie uma máquina para registrar os primeiros ciclos.</p>
+    </div>
+  </section>
+  <section class="cartao painel-grafico">
+    <div class="titulo-bloco"><div><h2>Eventos recentes</h2><p>Comandos e ocorrências da frota.</p></div>
+      <span class="glifo neutro">{{ icone('clock', 19) }}</span></div>
+    <div id="eventos" class="eventos"></div>
+  </section>
+</div>
+{{ dialogos() }}
+{% endblock %}

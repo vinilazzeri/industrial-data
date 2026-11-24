@@ -1,0 +1,19 @@
+tamanho,distribuicao,algoritmo,consultas_limite,estimativa_modelo,consultas_compensacao
+500,Regular,binaria,1000,128,250
+500,Regular,interpolacao,1000,123,250
+500,Regular,hash,1000,19,50
+500,Lacunas e concentração,binaria,1000,133,250
+500,Lacunas e concentração,interpolacao,1000,,
+500,Lacunas e concentração,hash,1000,20,50
+2000,Regular,binaria,1000,127,250
+2000,Regular,interpolacao,1000,126,250
+2000,Regular,hash,1000,20,50
+2000,Lacunas e concentração,binaria,1000,138,250
+2000,Lacunas e concentração,interpolacao,1000,,
+2000,Lacunas e concentração,hash,1000,22,50
+8000,Regular,binaria,1000,120,250
+8000,Regular,interpolacao,1000,120,250
+8000,Regular,hash,1000,17,50
+8000,Lacunas e concentração,binaria,1000,121,250
+8000,Lacunas e concentração,interpolacao,1000,1348,
+8000,Lacunas e concentração,hash,1000,17,50

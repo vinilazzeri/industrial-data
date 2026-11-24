@@ -1,0 +1,98 @@
+{% from 'base.html' import icone %}
+{% from '_ilustracoes.html' import desenho %}
+
+{% macro opcoes_medicao() %}
+<option value="temperatura_processo">Temperatura · °C</option>
+<option value="rpm">Rotação · rpm</option>
+<option value="torque">Torque · Nm</option>
+<option value="desgaste">Desgaste · min</option>
+{% endmacro %}
+
+{% macro cartao(codigo, nome, detalhe=false) %}
+<article class="cartao unidade-operacional" data-unidade="{{ codigo }}" data-visual="parada" {% if detalhe %}hidden{% endif %}>
+  <div class="unidade-cabecalho">
+    <div><span class="codigo-unidade">{{ codigo }}</span><h3>{{ nome }}</h3></div>
+    <span data-estado class="selo parada">Carregando</span>
+  </div>
+  <div class="janela-tecnica">
+    {{ desenho(codigo, nome) }}
+    <span class="legenda-tecnica" data-movimento>AGUARDANDO ESTADO</span>
+  </div>
+  <div class="unidade-corpo">
+    <div class="sensores">
+      {% for campo, nome_campo, unidade, ajuda in (
+        ('rpm', 'Rotação', 'rpm', 'Velocidade do eixo. Em repouso, a rotação atual é zero.'),
+        ('torque', 'Torque', 'Nm', 'Esforço mecânico aplicado durante a operação.'),
+        ('temperatura', 'Temperatura', '°C', 'Temperatura do processo na última leitura.'),
+        ('desgaste', 'Desgaste', 'min', 'Desgaste acumulado da ferramenta desde o último rearme.')) %}
+      <div class="sensor" data-sensor="{{ campo }}" title="{{ ajuda }}">
+        <span>{{ nome_campo }}</span><strong data-valor>—</strong><small>{{ unidade }}</small>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="fases">
+      <div class="linha-medidor"><span title="Maior percentual entre torque e rotação em relação aos seus limites.">Carga operacional</span><strong data-carga>—</strong></div>
+      <meter data-carga-barra aria-label="Carga operacional" min="0" max="100" low="85" high="100" optimum="0" value="0"></meter>
+      <div class="linha-medidor lote"><span data-ciclos>Ciclos · —</span><strong data-percentual>—</strong></div>
+      <progress data-progresso aria-label="Progresso do lote" max="100" value="0"></progress>
+    </div>
+    <p class="condicao" data-condicao aria-live="polite">Consultando a simulação…</p>
+  </div>
+  <div class="unidade-rodape">
+    <div class="acoes controles" data-controles aria-label="Controles da {{ codigo }}">
+      <button type="button" class="botao primario" data-comando="iniciar" hidden>{{ icone('play', 15) }} Iniciar</button>
+      <button type="button" class="botao" data-comando="pausar" hidden>{{ icone('pause', 15) }} Pausar</button>
+      <button type="button" class="botao primario" data-comando="retomar" hidden>{{ icone('play', 15) }} Retomar</button>
+      <button type="button" class="botao" data-comando="interromper" hidden>{{ icone('stop', 15) }} Interromper</button>
+      <button type="button" class="botao" data-configurar hidden>{{ icone('settings', 14) }} Configurar</button>
+      <button type="button" class="botao perigo" data-ver-falha hidden>{{ icone('alert', 15) }} Ver falha</button>
+      <button type="button" class="botao primario" data-comando="reiniciar" hidden>Reiniciar</button>
+      {% if detalhe %}
+      <button type="button" class="botao perigo" data-comando="falha" hidden>{{ icone('alert', 15) }} Simular falha</button>
+      {% endif %}
+    </div>
+    <div class="unidade-links">
+      <a href="{{ url_for('ocorrencias', origem=codigo) }}" class="link" data-investigar-maquina>{{ icone('search', 14) }} Investigar ocorrência</a>
+      {% if not detalhe %}
+      <a href="{{ url_for('maquinas', maquina=codigo) }}#historico" class="link">{{ icone('clock', 14) }} Histórico</a>
+      <a href="{{ url_for('maquinas', maquina=codigo, painel='estatisticas') }}#estatisticas" class="link">{{ icone('chart', 14) }} Estatísticas</a>
+      {% endif %}
+    </div>
+  </div>
+</article>
+{% endmacro %}
+
+{% macro dialogos() %}
+<dialog id="modal-configuracao" aria-labelledby="titulo-configuracao">
+  <form id="parametros-maquina">
+    <h2 id="titulo-configuracao">Configurar máquina</h2>
+    <div class="grade-campos configuracao-campos">
+      <label>Rotação · rpm<input name="rpm" type="number" required min="1" max="10000"><small>Velocidade de referência do eixo.</small></label>
+      <label>Torque · Nm<input name="torque" type="number" required min="0" max="300" step="any"><small>Esforço mecânico aplicado.</small></label>
+      <label>Temperatura de referência · °C<input name="temperatura_c" type="number" required min="-73.15" max="376.85" step="any"><small>Condição térmica do processo.</small></label>
+      <label>Desgaste inicial · min<input name="desgaste" type="number" required min="0" max="1000"><small>Uso acumulado da ferramenta.</small></label>
+      <label>Ciclos por lote<input name="ciclos" type="number" required min="1" max="500"><small>Quantidade de leituras a gerar.</small></label>
+      <label>Modo operacional<select name="modo"><option>Normal</option><option>Sobrecarga</option><option>Desgaste acelerado</option><option>Personalizado</option></select><small id="descricao-modo"></small></label>
+    </div>
+    <details class="limites-configuracao">
+      <summary>Limites específicos da máquina</summary>
+      <p>Deixe um campo vazio para usar o limite global. O aviso informa a faixa de alerta.</p>
+      <div class="grade-campos">
+        {% for campo, nome, minimo, maximo in (
+          ('rpm','Rotação · rpm',1,10000), ('torque','Torque · Nm',1,300),
+          ('temperatura_c','Temperatura · °C',-72.15,376.85), ('desgaste','Desgaste · min',1,1000)) %}
+        <label>Limite de {{ nome|lower }}<input name="limite_{{ campo }}" type="number" min="{{ minimo }}" max="{{ maximo }}" step="any"><small data-faixa="{{ campo }}"></small></label>
+        {% endfor %}
+      </div>
+    </details>
+    <p class="erro-form" role="alert"></p>
+    <div class="acoes direita"><button type="button" class="botao" data-fechar>Cancelar</button>
+      <button type="submit" class="botao primario">Salvar parâmetros</button></div>
+  </form>
+</dialog>
+<dialog id="modal-falha" aria-labelledby="titulo-falha">
+  <h2 id="titulo-falha">Falha da máquina</h2><p id="falha-contexto"></p>
+  <ul id="falha-motivos"></ul>
+  <div class="acoes direita"><button type="button" class="botao" data-fechar>Fechar</button></div>
+</dialog>
+{% endmacro %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block scripts %}<script defer src="{{ url_for('static', filename='relatorios.js') }}"></script>{% endblock %}
+{% block conteudo %}
+<section class="cabecalho-pagina">
+  <div><h1>{{ titulo }}</h1><p>Resumos operacionais e evidências do laboratório em um só lugar.</p></div>
+  <a class="botao" href="/api/maquinas/todas/csv">{{ icone('download', 17) }} Exportar simulação</a>
+</section>
+<section class="cartao painel-grafico">
+  <div class="titulo-bloco"><div><h2>Resumo por máquina</h2><p>Indicadores derivados do histórico de cada equipamento.</p></div></div>
+  <div class="tabela-rolavel" id="resumo-maquinas"></div>
+</section>
+<section class="cartao painel-grafico bloco">
+  <div class="titulo-bloco"><div><h2>Distribuição de variáveis</h2><p>Estatísticas e frequência das medições agrupadas por fonte.</p></div></div>
+  <div class="linha-form">
+    <label>Fonte<select id="relatorio-fonte"><option value="ai4i">AI4I original</option><option value="simulacao">Simulação</option></select></label>
+    <label>Variável<select id="relatorio-campo"><option value="torque">Torque · Nm</option><option value="rpm">Rotação · rpm</option><option value="temperatura_processo">Temperatura do processo · K</option><option value="temperatura_ar">Temperatura do ar · K</option><option value="desgaste">Desgaste · min</option></select></label>
+  </div>
+  <p id="contagem-fonte" class="texto-secundario" aria-live="polite"></p>
+  <div class="grafico"><canvas id="histograma" role="img" aria-label="Histograma da variável selecionada"></canvas><p id="histograma-vazio" class="grafico-vazio" hidden>Sem registros nesta fonte.</p></div>
+  <div class="tabela-rolavel" id="descricao-fonte"></div>
+</section>
+<div class="grade-config bloco" id="relatorio-experimentos"></div>
+{% endblock %}

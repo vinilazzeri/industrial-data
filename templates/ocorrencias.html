@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% from '_investigacao.html' import painel_operacoes %}
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='investigacao.css') }}">
+<script defer src="{{ url_for('static', filename='analise-operacional.js') }}"></script>
+<script defer src="{{ url_for('static', filename='ocorrencias.js') }}"></script>
+{% endblock %}
+{% block conteudo %}
+<section class="cabecalho-pagina">
+  <div><h1>{{ titulo }}</h1><p>Relacione alertas e falhas aos ciclos registrados. Organize e consulte as evidências com as estratégias do projeto.</p></div>
+  <div class="acoes"><button type="button" class="botao" id="cenario-demo"
+    title="Executa 12 ciclos de desgaste acelerado na M-01 com semente 42">Executar cenário demonstrativo</button></div>
+</section>
+<section class="cartao painel-grafico">
+  <div class="titulo-bloco"><div><h2>Selecionar evidências</h2><p>Use uma ocorrência ou escolha um intervalo de operação da máquina.</p></div></div>
+  <form class="linha-form" id="filtros-ocorrencias">
+    <label>Máquina<select name="origem">{% for codigo, nome in equipamentos_nome.items() %}<option value="{{ codigo }}">{{ codigo }} · {{ nome }}</option>{% endfor %}</select></label>
+    <label>Ocorrência<select name="ocorrencia"><option value="">Intervalo sem ocorrência</option></select></label>
+    <label>Ciclo inicial<input name="inicio" type="number" min="1" placeholder="Primeiro"></label>
+    <label>Ciclo final<input name="fim" type="number" min="1" placeholder="Último"></label>
+    <button class="botao primario" type="submit">Aplicar recorte</button>
+  </form>
+  <p class="texto-secundario" id="estado-ocorrencias" role="status">Carregando evidências…</p>
+  <div class="tabela-rolavel lista-ocorrencias" id="lista-ocorrencias"></div>
+</section>
+<section class="cartao painel-grafico bloco" id="conclusao-operacional">
+  <div class="titulo-bloco"><div><h2>Conclusão operacional</h2><p id="observacao-ocorrencia"></p></div>
+    <div class="acoes">
+      <a class="botao" id="ver-associados" href="#registros-associados">Ver registros associados</a>
+      <a class="botao" id="exportar-evidencias" hidden>{{ icone('download', 16) }} Exportar evidências</a>
+      <a class="botao primario" id="abrir-laboratorio" hidden>Comparar desempenho {{ icone('arrow', 16) }}</a>
+    </div>
+  </div>
+  <div class="fichas-investigacao" id="resumo-ocorrencia"></div>
+  <div id="detecao-ocorrencia" class="resultado-consulta bloco-curto" hidden></div>
+  <div class="linha-form"><label>Variável operacional<select id="variavel-ocorrencia">
+    <option value="temperatura_processo">Temperatura · °C</option><option value="torque">Torque · Nm</option>
+    <option value="rpm">Rotação · rpm</option><option value="desgaste">Desgaste · min</option>
+  </select></label></div>
+  <div class="grafico" id="grafico-ocorrencia-area">
+    <canvas id="grafico-ocorrencia" aria-label="Evolução dos sensores no recorte" role="img"></canvas>
+    <p class="grafico-vazio" id="grafico-ocorrencia-vazio">Ainda não há leituras neste intervalo.</p>
+  </div>
+  <p class="texto-secundario bloco-curto">As medições mostram as condições observadas. Uma associação no tempo, por si só, é insuficiente para estabelecer causa física.</p>
+</section>
+{{ painel_operacoes() }}
+<section class="cartao painel-grafico bloco" id="registros-associados">
+  <div class="titulo-bloco"><div><h2>Registros associados</h2><p id="registros-ocorrencia-info">Últimas 100 medições consultáveis no recorte.</p></div>
+    <div class="acoes"><a class="botao" id="abrir-registros" hidden>Abrir em Registros</a></div>
+  </div>
+  <div class="tabela-rolavel" id="registros-ocorrencia"></div>
+</section>
+{% endblock %}

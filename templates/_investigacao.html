@@ -1,0 +1,33 @@
+{% macro painel_operacoes(laboratorio=false) %}
+<section class="cartao painel-grafico bloco" id="analise-operacional">
+  <div class="titulo-bloco"><div><h2>Análise computacional</h2><p data-acao-descricao></p></div>
+    <button type="button" class="botao" data-exportar-metricas hidden>Exportar métricas</button>
+  </div>
+  {% if not laboratorio %}
+  <div class="abas abas-investigacao" aria-label="Ação de investigação">
+    <button class="aba" type="button" data-acao-analise="ordenacao">Identificar valores críticos</button>
+    <button class="aba" type="button" data-acao-analise="busca">Localizar uma medição</button>
+    <button class="aba" type="button" data-acao-analise="consulta-hash">Consultar histórico por hash</button>
+    <button class="aba" type="button" data-acao-analise="sistema">Avaliar manutenção</button>
+  </div>
+  {% endif %}
+  <form class="linha-form" data-form-analise>
+    <label data-entrada="atributo">Medição<select name="atributo">
+      <option value="temperatura_processo">Temperatura</option><option value="torque">Torque</option>
+      <option value="desgaste">Desgaste</option><option value="rpm">Rotação</option><option value="identificador">UDI</option>
+    </select></label>
+    <label data-entrada="estrategia">Estratégia<select name="estrategia"></select></label>
+    <label data-entrada="udi">Identificador (UDI)<input name="udi" inputmode="numeric" pattern="[0-9]+" required></label>
+    <label data-entrada="capacidade">Capacidade (baldes)<input name="capacidade" type="number" min="1" max="100000" value="17" required></label>
+    <label data-entrada="consultas">Consultas repetidas<input name="consultas" type="number" min="1" max="1000" value="100" required></label>
+    <button class="botao primario" data-executar-analise disabled>Executar</button>
+  </form>
+  <p data-resultado-analise role="status" class="texto-secundario"></p>
+  <div data-registro-analise class="resultado-consulta bloco-curto" hidden></div>
+  <div class="tabela-rolavel" data-metricas-analise hidden></div>
+  <div data-extremos class="grade-config bloco-curto" hidden>
+    <section><h3>Maiores valores</h3><div class="tabela-rolavel" data-maiores></div></section>
+    <section><h3>Menores valores</h3><div class="tabela-rolavel" data-menores></div></section>
+  </div>
+</section>
+{% endmacro %}

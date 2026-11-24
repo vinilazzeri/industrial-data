@@ -1,0 +1,129 @@
+.cabecalho-operacao {margin-bottom:22px}
+.operacao-kpis .kpi {padding:11px 14px;min-height:86px;background:#131e28}
+.operacao-kpis .glifo {width:29px;height:29px}
+.operacao-kpis .numero-kpi {font-size:26px;margin:4px 0 2px}
+.frota-operacional {margin-top:23px}
+.frota-operacional > .titulo-bloco {align-items:start}
+.ajuda-operacional {position:relative;font-size:12px;color:#a9c2cd;z-index:2}
+.ajuda-operacional summary {padding:6px 9px;border:1px solid var(--borda);border-radius:6px;cursor:pointer;white-space:nowrap}
+.ajuda-operacional ol {position:absolute;right:0;top:29px;width:min(280px,82vw);margin:7px 0 0;
+  border:1px solid #395063;border-radius:7px;padding:10px 12px 10px 30px;background:#172630;color:#d0dfe7;
+  box-shadow:0 10px 26px #0006}
+.ajuda-operacional li+li {margin-top:5px}
+.unidade-operacional {
+  --sinal:#8797a5; --cadencia:1.4s; --cadencia-prensa:1.8s; --tinta:#8499aa;
+  display:grid;grid-template-rows:auto auto 1fr auto;overflow:hidden;
+  background:linear-gradient(151deg,#1a2833,#15212b 64%);border-color:#30414d;
+}
+.unidade-operacional[data-visual="operando"] {--sinal:#55d6a8;--tinta:#a2ecd3;border-color:#2e514a}
+.unidade-operacional[data-visual="alerta"] {--sinal:#f4b860;--tinta:#ffe0ad;border-color:#745f41}
+.unidade-operacional[data-visual="falha"] {--sinal:#f07577;--tinta:#ffc2c4;border-color:#824e54}
+.unidade-operacional[data-visual="pausada"] {--sinal:#77b6e5;--tinta:#b6dcf8;border-color:#3f5c71}
+.unidade-cabecalho {display:flex;justify-content:space-between;align-items:center;gap:7px;padding:12px 13px}
+.unidade-cabecalho h3 {font-size:15px;line-height:1.3}
+.codigo-unidade {display:block;color:#9bb2c2;font:10px/1.4 var(--mono);letter-spacing:.08em}
+.selo.pausada {color:#bddfff;background:#263c52;border-color:#406786}
+.janela-tecnica {
+  position:relative;min-width:0;margin:0 12px;height:155px;display:grid;place-items:center;
+  border:1px solid #2a3a46;border-radius:7px;overflow:hidden;
+  background-color:#0d1923;
+  background-image:radial-gradient(ellipse at 48% 55%,#2b49593d,transparent 70%),
+    linear-gradient(#7d9aac13 1px,transparent 1px),linear-gradient(90deg,#7d9aac13 1px,transparent 1px);
+  background-size:auto,18px 18px,18px 18px;
+}
+.desenho-industrial {height:100%;width:100%;max-width:390px;display:block}
+.desenho-industrial .contorno {stroke:#7590a1;stroke-width:1;stroke-linejoin:round}
+.desenho-industrial .metal-escuro {fill:#233947;stroke:#5e7b8c;stroke-width:1;stroke-linejoin:round}
+.desenho-industrial .metal-claro {fill:#4d6779;stroke:#88a0b0;stroke-width:1;stroke-linejoin:round}
+.desenho-industrial .cavidade {fill:#0c1720;stroke:#4b6576;stroke-width:1}
+.desenho-industrial .visor {fill:#184241;stroke:#6ab0a6;stroke-width:.8}
+.desenho-industrial .trilho {stroke:#648494;stroke-width:.9;opacity:.74;fill:none}
+.desenho-industrial .detalhe {stroke:#abc1cb;stroke-width:.9;opacity:.7;fill:none}
+.desenho-industrial .pa {fill:#85a2b1;stroke:#c1d1d5;stroke-width:.45}
+.desenho-industrial .parafuso {fill:#859cac}
+.desenho-industrial .luz-tecnica {fill:var(--sinal)}
+.desenho-industrial .chao {fill:none;stroke:#385164;stroke-width:.8;opacity:.6}
+.desenho-industrial .guia-tecnica {fill:none;stroke:#79a4b9;stroke-width:.75;stroke-dasharray:2 2}
+.desenho-industrial .anotacao-tecnica {fill:#a4bdcc;font:7.4px var(--mono);letter-spacing:.55px}
+.desenho-industrial .sinalizador {fill:var(--sinal);stroke:#a1b7c4;stroke-width:.8}
+.desenho-industrial .halo-sinal {fill:var(--sinal);opacity:.09}
+[data-visual="falha"] .halo-sinal {animation:pulso-falha 1.8s ease-in-out infinite}
+.legenda-tecnica {position:absolute;bottom:6px;left:8px;display:flex;align-items:center;gap:5px;
+  color:var(--tinta);font:9px var(--mono);letter-spacing:.035em}
+.legenda-tecnica::before {content:"";width:5px;height:5px;background:var(--sinal);border-radius:50%}
+.peca-movel {animation-play-state:paused!important}
+.rotor {transform-origin:0 0;animation:rotacao-eixo var(--cadencia) linear infinite}
+.ventilador {animation-duration:calc(var(--cadencia) * 1.5)}
+.laminas-eixo {animation:passagem-eixo calc(var(--cadencia) * .5) linear infinite}
+.estrias-fresa {fill:none;stroke:#d6e4e7;stroke-width:.9;animation:passagem-eixo calc(var(--cadencia) * .62) linear infinite}
+.embolo {animation:curso-prensa var(--cadencia-prensa) cubic-bezier(.37,0,.45,1) infinite}
+[data-em-movimento="true"] .peca-movel {animation-play-state:running!important}
+[data-visual="parada"] .peca-movel {animation-name:none}
+.unidade-corpo {padding:10px 12px 8px}
+.sensores {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.sensor {border:1px solid #2d414f;background:#111d27;border-radius:5px;padding:5px 4px 6px;min-width:0;text-align:center}
+.sensor span {display:block;color:#aec0cb;font-size:9px;white-space:nowrap}
+.sensor strong {display:block;font:clamp(11px,1.08vw,16px)/1.2 var(--mono);margin-top:3px;overflow-wrap:anywhere}
+.sensor small {display:block;font:9px/1.35 var(--mono);color:#a6b9c6}
+.sensor[data-nivel="alerta"] {border-color:#8c693a;color:#ffd898;background:#362a22}
+.sensor[data-nivel="falha"] {border-color:#a65c62;color:#ffb9be;background:#392731}
+.fases {margin-top:8px}
+.linha-medidor {display:flex;align-items:center;justify-content:space-between;gap:4px;color:#b0c2ce;font-size:10px}
+.linha-medidor strong {font:11px var(--mono);color:#e5f2f6}
+.linha-medidor.lote {margin-top:6px}
+.fases meter,.fases progress {display:block;width:100%;height:5px;border:0;margin:4px 0 0}
+.fases progress {appearance:none;background:#283b48;border-radius:4px}
+.fases progress::-webkit-progress-bar {background:#283b48;border-radius:4px}
+.fases progress::-webkit-progress-value {background:var(--teal);border-radius:4px}
+.fases progress::-moz-progress-bar {background:var(--teal);border-radius:4px}
+.fases meter::-webkit-meter-bar {background:#283b48;border:0;border-radius:4px;height:5px}
+.fases meter::-webkit-meter-optimum-value {background:#60c9a6}
+.fases meter::-webkit-meter-suboptimum-value {background:#ecba73}
+.fases meter::-webkit-meter-even-less-good-value {background:#f49394}
+.fases meter[data-sobrecarga="true"]::-webkit-meter-suboptimum-value {background:#f49394}
+.fases meter[data-sobrecarga="true"]::-moz-meter-bar {background:#f49394}
+.condicao {margin-top:8px;min-height:30px;font-size:10px;line-height:1.5;color:#b4c5ce}
+[data-visual="alerta"] .condicao,[data-visual="falha"] .condicao {color:var(--tinta)}
+.unidade-rodape {background:#111c25;border-top:1px solid #293a47;padding:8px 12px}
+.controles .botao {min-height:32px;padding:5px 9px}
+.unidade-links {display:flex;flex-wrap:wrap;gap:5px 13px;margin-top:7px}
+.unidade-links .link {font-size:11px}
+.operacao-monitor {margin-top:18px}
+.operacao-monitor .evento .glifo,#eventos-maquina .glifo {font:10px var(--mono);white-space:nowrap}
+.aviso-conexao {padding:8px 10px;margin-bottom:10px;color:#ffdaa5;background:#342923;border-radius:6px}
+.folha-maquina {display:grid;grid-template-columns:minmax(300px, .85fr) minmax(0,1.15fr);gap:13px;align-items:start}
+.folha-maquina .janela-tecnica {height:224px}
+.folha-maquina .sensor strong {font-size:17px}
+.mini-estatisticas {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.mini-estatisticas div {padding:8px;border:1px solid var(--borda);border-radius:5px;background:#101a24}
+.mini-estatisticas small,.mini-estatisticas strong {display:block}
+.mini-estatisticas strong {font:15px var(--mono)}
+.historico-detalhe .tabela-rolavel {max-height:340px}
+.configuracao-campos small,.limites-configuracao small {min-height:17px;font-size:10px;font-weight:400}
+.limites-configuracao {margin:12px 0;border:1px solid var(--borda);border-radius:6px;padding:8px}
+.limites-configuracao summary {cursor:pointer;font-size:12px;font-weight:600}
+.limites-configuracao p {font-size:11px}
+[data-faixa][data-nivel="alerta"] {color:#f7c984}
+[data-faixa][data-nivel="falha"] {color:#ffaaa9}
+#falha-motivos {font-size:13px;line-height:1.7;padding-left:21px;margin-bottom:16px}
+@keyframes rotacao-eixo {to {transform:rotate(360deg)}}
+@keyframes passagem-eixo {0%,100% {transform:translateY(-1px);opacity:.42} 50% {transform:translateY(1px);opacity:.9}}
+@keyframes curso-prensa {0%,15%,100% {transform:translateY(0)} 48%,59% {transform:translateY(4px)} 84% {transform:translateY(.5px)}}
+@keyframes pulso-falha {50% {opacity:.42}}
+@media(max-width:1080px) and (min-width:901px) {
+  .unidade-corpo,.unidade-rodape {padding-left:8px;padding-right:8px}
+  .sensores {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sensor strong {font-size:13px}
+}
+@media(max-width:900px) {
+  .folha-maquina {grid-template-columns:minmax(0,1fr)}
+  .sensor strong {font-size:14px}
+}
+@media(max-width:520px) {
+  .grade-maquinas:has(.unidade-operacional) {grid-template-columns:1fr}
+  .folha-maquina .janela-tecnica {height:180px}
+  .mini-estatisticas {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce) {
+  .desenho-industrial .peca-movel,.desenho-industrial .halo-sinal {animation:none!important}
+}

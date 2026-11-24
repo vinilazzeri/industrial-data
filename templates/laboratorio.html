@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% from '_investigacao.html' import painel_operacoes %}
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='investigacao.css') }}">
+<script defer src="{{ url_for('static', filename='analise-operacional.js') }}"></script>
+<script defer src="{{ url_for('static', filename='laboratorio.js') }}"></script>
+{% endblock %}
+{% block conteudo %}
+<section class="cabecalho-pagina">
+  <div><div class="secao-categoria"><span class="ponto"></span> ANÁLISE EXPERIMENTAL</div>
+  <h1>{{ titulo }}</h1><p>Avalie o custo das operações utilizadas para investigar os registros industriais.</p></div>
+  <a class="botao" id="voltar-investigacao" hidden>Voltar à investigação</a>
+</section>
+<section class="cartao painel-grafico controle-fonte">
+  <div class="abas" aria-label="Modo de análise">
+    <button type="button" class="aba" data-modo="operacional">Análise operacional</button>
+    <button type="button" class="aba" data-modo="academico">Investigação experimental acadêmica</button>
+  </div>
+  <form id="fonte-laboratorio" class="linha-form">
+    <label>Origem dos dados<select name="origem">{% for codigo, (nome, _) in origens.items() %}
+      <option value="{{ codigo }}">{{ nome }}</option>{% endfor %}</select></label>
+    <label data-ciclo-lab>Ciclo inicial<input name="inicio" type="number" min="1" placeholder="Primeiro"></label>
+    <label data-ciclo-lab>Ciclo final<input name="fim" type="number" min="1" placeholder="Último"></label>
+    <button class="botao" type="submit" data-ciclo-lab>Aplicar recorte</button>
+  </form>
+  <p class="contexto-lab" id="contexto-lab" role="status">Carregando origem…</p>
+  <p class="explicacao-medicao" id="modo-lab-nota"></p>
+</section>
+<div class="abas" aria-label="Tipo de experimento">
+  {% for chave, nome in abas.items() %}<button class="aba" data-aba="{{ chave }}" aria-pressed="false">{{ nome }}</button>{% endfor %}
+</div>
+<div id="area-operacional" hidden>{{ painel_operacoes(true) }}</div>
+<div id="area-academica">
+<section class="cartao painel-grafico">
+  <div class="titulo-bloco"><div><h2 id="lab-titulo">Configuração do experimento</h2><p id="lab-descricao"></p></div>
+    <span class="glifo teal">{{ icone('flask', 21) }}</span></div>
+  <form id="experimento" class="linha-form">
+    <label>Tamanhos<input name="tamanhos" value="500, 2000, 8000" required></label>
+    <label>Repetições<input name="repeticoes" type="number" min="5" max="15" value="{{ configuracoes.repeticoes }}" required></label>
+    <label>Semente<input name="semente" type="number" min="0" max="4294967295" value="{{ configuracoes.semente }}" required></label>
+    <label data-campo="consultas">Consultas<input name="consultas" type="number" min="1000" max="10000" step="2" value="1000" required></label>
+    <label data-campo="operacoes">Mutações<input name="operacoes" type="number" min="3" max="1000" value="100" required></label>
+    <label data-campo="atributo">Atributo<select name="atributo"><option value="torque">Torque</option><option value="rpm">Rotação</option><option value="temperatura_processo">Temperatura do processo</option><option value="temperatura_ar">Temperatura do ar</option><option value="desgaste">Desgaste</option></select></label>
+    <button class="botao primario">{{ icone('play', 17) }} Executar experimento</button>
+  </form>
+  <div id="progresso-lab" class="progresso-lab" hidden>
+    <progress id="progresso-barra" max="1"></progress><p id="progresso-texto" aria-live="polite"></p>
+  </div>
+</section>
+<section class="cartao painel-grafico bloco">
+  <div class="titulo-bloco"><div><h2 id="titulo-grafico-lab">Resultados medidos</h2><p id="resultado-lab-info">Carregando…</p></div>
+    <div class="acoes" id="exportacoes-lab" hidden>
+      <a class="botao" id="exportar-brutos">{{ icone('download', 17) }} Dados brutos</a>
+      <a class="botao" id="exportar-resumo">{{ icone('download', 17) }} Métricas</a>
+      <button type="button" class="botao" id="exportar-grafico">{{ icone('download', 17) }} Gráfico PNG</button>
+    </div>
+  </div>
+  <div id="lab-visual" hidden>
+    <div class="linha-form"><label id="rotulo-recorte">Distribuição<select id="recorte-lab"></select></label></div>
+    <div class="grafico grande"><canvas id="grafico-lab" role="img" aria-label="Comparação experimental"></canvas></div>
+    <div class="tabela-rolavel" id="tabela-lab"></div>
+    <p class="explicacao-medicao" id="interpretacao-lab"></p>
+  </div>
+</section>
+<section class="cartao painel-grafico bloco" id="bloco-compensacao" hidden>
+  <div class="titulo-bloco"><div><h2>Compensação do preparo</h2><p>Primeiro lote testado em que o custo total iguala ou supera o desempenho da busca sequencial.</p></div>
+    <a class="botao" id="exportar-compensacao">Exportar compensação</a></div>
+  <div class="tabela-rolavel" id="tabela-compensacao"></div>
+</section>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block scripts %}<script defer src="{{ url_for('static', filename='registros.js') }}"></script>{% endblock %}
+{% block conteudo %}
+<section class="cabecalho-pagina">
+  <div><h1>{{ titulo }}</h1><p id="registros-contexto">Consulte e edite a coleção de trabalho. O histórico original dos ciclos fica em Máquinas.</p></div>
+  <div class="acoes">
+    <button class="botao" id="botao-importar">{{ icone('upload', 17) }} Importar CSV</button>
+    <a class="botao" id="exportar-registros" href="/api/registros/csv">{{ icone('download', 17) }} Exportar CSV</a>
+    <button class="botao primario" id="novo-registro">{{ icone('plus', 17) }} Novo registro</button>
+  </div>
+</section>
+<section class="cartao painel-grafico">
+  <div class="titulo-bloco"><div><h2>Consulta por UDI</h2><p>Medições da estratégia de busca escolhida.</p></div>
+    <div class="acoes"><a class="botao" id="comparar-buscas" href="/laboratorio?modo=operacional&origem=trabalho&aba=busca">Comparar estratégias de busca</a></div></div>
+  <form id="consulta-registro" class="linha-form">
+    <label>Identificador<input name="udi" inputmode="numeric" pattern="[0-9]+" placeholder="Ex. 5000" required></label>
+    <label>Estratégia<select name="estrategia"><option value="sequencial">Sequencial</option>
+      <option value="binaria" selected>Binária</option><option value="interpolacao">Interpolação</option><option value="hash">Tabela hash</option></select></label>
+    <button class="botao primario">{{ icone('search', 17) }} Buscar</button>
+  </form>
+  <div id="resultado-consulta" class="resultado-consulta" aria-live="polite" hidden></div>
+  <p id="manutencao-registros" class="texto-secundario" role="status" hidden></p>
+</section>
+<section class="cartao painel-grafico bloco">
+  <div class="titulo-bloco"><div><h2>Coleção de registros</h2><p id="total-registros">Carregando…</p></div>
+    <div class="acoes"><a class="botao" id="comparar-ordenacoes" href="/laboratorio?modo=operacional&origem=trabalho&aba=ordenacao">Comparar ordenações</a>
+      <a class="botao" id="voltar-ocorrencia-registros" hidden>Voltar à investigação</a>
+    </div></div>
+  <form id="filtros-registros" class="linha-form filtros">
+    <label>Equipamento<select name="equipamento"><option value="">Todos</option><option>Sem equipamento</option>{% for codigo in equipamentos %}<option>{{ codigo }}</option>{% endfor %}</select></label>
+    <label>Fonte<select name="fonte"><option value="">Todas</option><option>AI4I</option><option>Simulação</option><option>Manual</option><option>Importação</option></select></label>
+    <label>Status<select name="status"><option value="">Todos</option><option>Normal</option><option>Alerta</option><option>Falha</option></select></label>
+    <label>Ordenação<select name="ordem"><option value="intercalacao">Merge Sort</option><option value="insercao">Insertion Sort</option><option value="heap">Heap Sort</option></select></label>
+    <label>Atributo<select name="atributo"><option value="identificador">UDI</option><option value="torque">Torque</option><option value="temperatura_processo">Temperatura do processo</option><option value="temperatura_ar">Temperatura do ar</option><option value="rpm">Rotação</option><option value="desgaste">Desgaste</option></select></label>
+    <label>Por página<select name="limite"><option>25</option><option>50</option><option>100</option></select></label>
+  </form>
+  <div id="tabela-registros" class="tabela-rolavel"></div>
+  <div class="paginacao"><button class="botao" id="anterior">Anterior</button><span id="pagina-registros" aria-live="polite"></span><button class="botao" id="proxima">Próxima</button></div>
+</section>
+<dialog id="registro-modal" aria-labelledby="titulo-registro">
+  <form id="form-registro"><h2 id="titulo-registro">Novo registro</h2>
+    <div class="grade-campos">
+      <label>UDI<input name="identificador" inputmode="numeric" pattern="[0-9]+" required></label>
+      <label>Produto<input name="produto" maxlength="100"></label>
+      <label>Tipo<select name="tipo"><option>L</option><option>M</option><option>H</option></select></label>
+      <label>Equipamento<select name="equipamento"><option value="">Sem equipamento</option>{% for codigo in equipamentos %}<option>{{ codigo }}</option>{% endfor %}</select></label>
+      <label>Ar · K<input name="temperatura_ar" type="number" min="0" step="any" value="300" required></label>
+      <label>Processo · K<input name="temperatura_processo" type="number" min="0" step="any" value="310" required></label>
+      <label>Rotação · rpm<input name="rpm" type="number" min="0" value="1500" required></label>
+      <label>Torque · Nm<input name="torque" type="number" min="0" step="any" value="40" required></label>
+      <label>Desgaste · min<input name="desgaste" type="number" min="0" value="0" required></label>
+    </div>
+    <fieldset class="marcacoes"><legend>Indicadores</legend>
+      {% for chave, nome in (('alerta','Alerta'),('falha','Falha'),('twf','TWF'),('hdf','HDF'),('pwf','PWF'),('osf','OSF'),('rnf','RNF')) %}
+      <label><input name="{{ chave }}" type="checkbox"> {{ nome }}</label>{% endfor %}
+    </fieldset>
+    <p class="erro-form" role="alert"></p>
+    <div class="acoes direita"><button class="botao" type="button" data-fechar>Cancelar</button><button class="botao primario">Salvar</button></div>
+  </form>
+</dialog>
+<dialog id="importar-modal" aria-labelledby="titulo-importar">
+  <form id="form-importar"><h2 id="titulo-importar">Importar registros</h2>
+    <p>Selecione um CSV em UTF-8 no esquema AI4I ou no esquema exportado. Use UDIs livres, inclusive em relação ao histórico das máquinas.</p>
+    <label>Arquivo CSV<input name="arquivo" type="file" accept=".csv,text/csv" required></label>
+    <p class="erro-form" role="alert"></p>
+    <div class="acoes direita"><button class="botao" type="button" data-fechar>Cancelar</button><button class="botao primario">Importar</button></div>
+  </form>
+</dialog>
+<dialog id="remover-modal" aria-labelledby="titulo-remover">
+  <form id="form-remover"><h2 id="titulo-remover">Remover registro</h2><p id="remover-descricao"></p>
+    <p class="erro-form" role="alert"></p>
+    <div class="acoes direita"><button class="botao" type="button" data-fechar>Cancelar</button><button class="botao perigo">Remover</button></div>
+  </form>
+</dialog>
+{% endblock %}

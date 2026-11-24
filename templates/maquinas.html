@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% from '_operacao.html' import cartao, dialogos, opcoes_medicao %}
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='operacao.css') }}">
+<script defer src="{{ url_for('static', filename='controle-operacional.js') }}"></script>
+<script defer src="{{ url_for('static', filename='operacao.js') }}"></script>
+<script defer src="{{ url_for('static', filename='detalhe-maquina.js') }}"></script>
+{% endblock %}
+{% block conteudo %}
+<section class="cabecalho-pagina cabecalho-operacao">
+  <div><h1>{{ titulo }}</h1><p>Ajuste a operação e investigue os ciclos de cada equipamento.</p></div>
+  <a class="botao" href="/api/maquinas/todas/csv">{{ icone('download', 17) }} Exportar frota</a>
+</section>
+<div class="abas" aria-label="Equipamento">
+{% for codigo in equipamentos %}<button type="button" class="aba" data-maquina="{{ codigo }}" aria-pressed="false">{{ icone('cpu', 17) }} {{ codigo }}</button>{% endfor %}
+</div>
+<p data-conexao-aviso class="aviso-conexao" role="status" hidden>Sem conexão com o simulador. Reconectando…</p>
+<div class="folha-maquina">
+  <div id="unidade-detalhe">
+  {% for codigo, nome in equipamentos_nome.items() %}{{ cartao(codigo, nome, true) }}{% endfor %}
+  </div>
+  <section class="cartao painel-grafico" id="estatisticas">
+    <div class="titulo-bloco">
+      <div><h2>Estatísticas da máquina</h2><p>Calculadas sobre todo o histórico do equipamento.</p></div>
+      <button class="botao" id="gerar-estatisticas" type="button" disabled>{{ icone('chart', 17) }} Gerar estatísticas</button>
+    </div>
+    <div id="estatisticas-maquina"><p class="estado-vazio">Gere as estatísticas para consolidar os ciclos registrados.</p></div>
+  </section>
+</div>
+<section class="cartao painel-grafico bloco historico-detalhe" id="historico">
+  <div class="titulo-bloco">
+    <div><h2>Histórico de ciclos</h2><p id="contexto-historico">Selecione a medição e o intervalo de ciclos.</p></div>
+    <a id="exportar-maquina" class="botao">{{ icone('download', 17) }} Exportar CSV</a>
+  </div>
+  <form id="filtros-historico" class="linha-form">
+    <label>Medição<select id="historico-campo">{{ opcoes_medicao() }}</select></label>
+    <label>Período<select name="periodo">
+      <option value="25">Últimos 25 ciclos</option><option value="60" selected>Últimos 60 ciclos</option>
+      <option value="250">Últimos 250 ciclos</option><option value="intervalo">Intervalo de ciclos</option>
+    </select></label>
+    <label data-intervalo hidden>Ciclo inicial<input name="inicio" type="number" min="1" step="1"></label>
+    <label data-intervalo hidden>Ciclo final<input name="fim" type="number" min="1" step="1"></label>
+    <button class="botao" data-intervalo hidden>Aplicar intervalo</button>
+  </form>
+  <div class="grafico grande"><canvas id="grafico-maquina" role="img" aria-label="Evolução da medição da máquina"></canvas>
+    <p id="maquina-grafico-vazio" class="grafico-vazio">Aguardando ciclos neste período.</p></div>
+  <div class="tabela-rolavel" id="historico-maquina"></div>
+  <div class="bloco"><div class="titulo-bloco"><div><h2>Eventos da máquina</h2><p>Comandos e ocorrências no período selecionado.</p></div></div>
+    <div id="eventos-maquina" class="eventos"></div></div>
+</section>
+{{ dialogos() }}
+{% endblock %}

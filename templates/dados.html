@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block scripts %}<script defer src="{{ url_for('static', filename='relatorios.js') }}"></script>{% endblock %}
+{% block conteudo %}
+<section class="cabecalho-pagina"><div><h1>{{ titulo }}</h1><p>Origem das observações, configuração da simulação e reprodutibilidade.</p></div></section>
+<div class="grade-config">
+  <section class="cartao painel-grafico">
+    <div class="titulo-bloco"><div><h2>Base AI4I 2020</h2><p>Amostras sintéticas de operação industrial.</p></div><span class="glifo azul">{{ icone('database', 20) }}</span></div>
+    <dl id="info-dados" class="lista-dados"></dl>
+    <a class="link" href="https://archive.ics.uci.edu/dataset/601/ai4i" target="_blank" rel="noopener">UCI Machine Learning Repository · CC BY 4.0 {{ icone('arrow', 15) }}</a>
+  </section>
+  <section class="cartao painel-grafico">
+    <div class="titulo-bloco"><div><h2>Ambiente e arquivos</h2><p>Execução local do IndustrialData.</p></div><span class="glifo teal">{{ icone('settings', 20) }}</span></div>
+    <dl id="info-ambiente" class="lista-dados"></dl>
+    <p class="texto-secundario">Os experimentos usam o CSV original, a semente e a configuração registrada em cada exportação.</p>
+  </section>
+</div>
+<section class="cartao painel-grafico bloco">
+  <div class="titulo-bloco"><div><h2>Configuração operacional</h2><p>Valores padrão do laboratório e limites usados pela simulação.</p></div></div>
+  <form id="configuracoes" class="formulario">
+    <div class="grade-campos ampla">
+      <label>Semente<input name="semente" type="number" min="0" max="4294967295" value="{{ configuracoes.semente }}" required></label>
+      <label>Repetições padrão<input name="repeticoes" type="number" min="5" max="15" value="{{ configuracoes.repeticoes }}" required></label>
+      {% for chave, nome, min, max in (('rpm','Rotação · rpm',1,10000),('torque','Torque · Nm',1,300),('temperatura','Temperatura · K',201,650),('desgaste','Desgaste · min',1,1000)) %}
+      <label>Limite de {{ nome|lower }}<input name="{{ chave }}" type="number" min="{{ min }}" max="{{ max }}" step="any" value="{{ configuracoes.limites[chave] }}" required></label>
+      {% endfor %}
+    </div>
+    <button class="botao primario">Salvar configurações</button>
+  </form>
+</section>
+{% endblock %}

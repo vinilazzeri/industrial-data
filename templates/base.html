@@ -1,0 +1,73 @@
+{% macro icone(nome, tamanho=20) -%}
+<svg width="{{ tamanho }}" height="{{ tamanho }}" viewBox="0 0 24 24" fill="none"
+     stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+{% if nome == 'activity' %}<path d="M2 12h5l3-8 4 16 3-8h5"/>
+{% elif nome == 'cpu' %}<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 2v3m6-3v3m-6 14v3m6-3v3M2 9h3m-3 6h3m14-6h3m-3 6h3"/>
+{% elif nome == 'database' %}<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/>
+{% elif nome == 'flask' %}<path d="M9 3h6m-5 0v7L4 19a1 1 0 0 0 1 2h14a1 1 0 0 0 1-2l-6-9V3M7 15h10"/>
+{% elif nome == 'chart' %}<path d="M3 3v18h18M8 16v-4m5 4V7m5 9V5"/>
+{% elif nome == 'settings' %}<path d="m10 2-.6 3-2 .9-2.7-1.6-2 3.4 2.3 2.1v2.4l-2.3 2.1 2 3.4 2.7-1.6 2 .9.6 3h4l.6-3 2-.9 2.7 1.6 2-3.4-2.3-2.1V9.8l2.3-2.1-2-3.4-2.7 1.6-2-.9-.6-3z" transform="translate(0 1)"/><circle cx="12" cy="12" r="3"/>
+{% elif nome == 'download' %}<path d="M12 3v12m-4-4 4 4 4-4M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+{% elif nome == 'play' %}<path d="m8 5 12 7-12 7z" fill="currentColor" stroke="none"/>
+{% elif nome == 'pause' %}<path d="M9 5v14m6-14v14" stroke-width="3.2"/>
+{% elif nome == 'stop' %}<rect x="6" y="6" width="12" height="12" rx="2"/>
+{% elif nome == 'arrow' %}<path d="M4 12h15m-6-6 6 6-6 6"/>
+{% elif nome == 'alert' %}<path d="m10.5 4-8 14a1.5 1.5 0 0 0 1.3 2h16.4a1.5 1.5 0 0 0 1.3-2l-8-14a1.7 1.7 0 0 0-3 0zM12 9v4m0 3h.01"/>
+{% elif nome == 'failure' %}<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/>
+{% elif nome == 'menu' %}<path d="M4 6h16M4 12h16M4 18h16"/>
+{% elif nome == 'search' %}<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>
+{% elif nome == 'plus' %}<path d="M12 5v14M5 12h14"/>
+{% elif nome == 'upload' %}<path d="M12 16V4M8 8l4-4 4 4M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+{% elif nome == 'clock' %}<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+{% else %}<path d="M5 5h14v14H5z"/>{% endif %}
+</svg>
+{%- endmacro %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0B1117">
+  <title>{{ titulo }} · IndustrialData</title>
+  <link rel="icon" href="{{ url_for('static', filename='marca.png') }}" type="image/png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+  <script defer src="{{ url_for('static', filename='vendor/chart.umd.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='interface.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</head>
+<body data-pagina="{{ pagina }}">
+  <a class="pular" href="#principal">Pular para o conteúdo</a>
+  <aside class="sidebar" id="navegacao">
+    <a class="marca" href="{{ url_for('painel') }}">
+      <span class="marca-icone">{{ icone('activity', 24) }}</span>
+      <span><strong>Industrial<span>Data</span></strong><small>Monitoramento industrial</small></span>
+    </a>
+    <nav aria-label="Navegação principal">
+      <p class="rotulo-nav">OPERAÇÕES</p>
+      {% for chave, url, nome, _, glifo in paginas %}
+      {% if chave == 'laboratorio' %}<p class="rotulo-nav">ANÁLISE</p>{% endif %}
+      {% if chave == 'dados' %}<p class="rotulo-nav">SISTEMA</p>{% endif %}
+      <a class="atalho {% if chave == pagina %}selecionado{% endif %}" href="{{ url }}"
+         {% if chave == pagina %}aria-current="page"{% endif %}>{{ icone(glifo, 18) }}<span>{{ nome }}</span></a>
+      {% endfor %}
+    </nav>
+    <div class="rodape-sidebar">
+      <div class="sistema"><span class="ponto"></span><div><b>Ambiente local</b><small>Simulador industrial</small></div></div>
+      <span class="credito">MECAI / ICMC-USP</span>
+    </div>
+  </aside>
+  <div class="espaco-principal">
+    <header class="barra-topo">
+      <button class="icone-botao menu" id="menu" type="button" aria-label="Alternar navegação"
+              aria-controls="navegacao" aria-expanded="false">{{ icone('menu') }}</button>
+      <span class="migalha">IndustrialData <span>/</span> <strong>{% for chave, _, nome, _, _ in paginas %}{% if chave == pagina %}{{ nome }}{% endif %}{% endfor %}</strong></span>
+      <span class="topo-local"><i class="ponto"></i> Local</span>
+    </header>
+    <main id="principal">
+      {% block conteudo %}{% endblock %}
+      <footer class="rodape-pagina"><span>IndustrialData</span><span>Análise de Algoritmos · MECAI / ICMC-USP</span></footer>
+    </main>
+  </div>
+  <div id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
